@@ -34,7 +34,9 @@ public final class MetaCharacters {
 
     /* Logical operators */
     public static final String ALTERNATION = "|";
+
     // Concatenation is just appending two strings...
+    // So, no special meta character for that.
 
     /* Groups */
     public static final String NAMED_CAPTURE_GROUP_PREFIX = "P";

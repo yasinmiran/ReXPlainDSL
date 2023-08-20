@@ -13,27 +13,27 @@ public final class SetExpressionTest {
 
     @Test
     public void itShouldCreateANonNegatedCharacterClass() {
-        final Expression simpleSet = simpleSet("A", "B", "D", "E", "C");
+        final Expression simpleSet = simpleSetStr("A", "B", "D", "E", "C");
         assertEquals(simpleSet.toRegex().toString(), "[A-E]");
     }
 
     @Test
     public void itShouldCreateANegatedCharacterClass() {
-        final Expression simpleSet = negated(simpleSet("a", "b", "c", "d", "Z"));
+        final Expression simpleSet = negated(simpleSetStr("a", "b", "c", "d", "Z"));
         assertEquals(simpleSet.toRegex().toString(), "[^Za-d]");
     }
 
     @Test
     public void itShouldCreateASimpleCharacterClassWithoutRanges() {
-        final Expression simpleSet = simpleSet("a", "d", "f", "h", "Z");
+        final Expression simpleSet = simpleSetStr("a", "d", "f", "h", "Z");
         assertEquals(simpleSet.toRegex().toString(), "[Zadfh]");
     }
 
     @Test
     public void itShouldDoASetUnionOperationOnTwoSets() {
         final Expression set = union(
-                rangedSet("A", "Z"),
-                simpleSet("a", "d", "f", "h", "Z")
+                rangedSetStr("A", "Z"),
+                simpleSetStr("a", "d", "f", "h", "Z")
         );
         assertEquals(set.toRegex().toString(), "[A-Zadfh]");
     }
@@ -42,8 +42,8 @@ public final class SetExpressionTest {
     public void itShouldDoASetIntersectionOperationOnTwoSets() {
         assertEquals(
                 intersection(
-                        union(rangedSet("A", "Z"), rangedSet("a", "z")),
-                        simpleSet("d", "e", "f")
+                        union(rangedSetStr("A", "Z"), rangedSetStr("a", "z")),
+                        simpleSetStr("d", "e", "f")
                 ).toRegex().toString(),
                 "[d-f]"
         );
@@ -51,40 +51,40 @@ public final class SetExpressionTest {
 
     @Test
     public void itShouldDoADifferenceOperationOnTwoSets() {
-        final Expression setA = union(rangedSet("A", "Z"), rangedSet("a", "z"));
-        final Expression setB = union(rangedSet("M", "P"), rangedSet("m", "p"));
+        final Expression setA = union(rangedSetStr("A", "Z"), rangedSetStr("a", "z"));
+        final Expression setB = union(rangedSetStr("M", "P"), rangedSetStr("m", "p"));
         assertEquals(difference(setA, setB).toRegex().toString(), "[A-LQ-Za-lq-z]");
     }
 
     @Test
     public void itShouldDoASetUnionOperationOnInlineRegex() {
         Pattern expression = new RegexSynth(
-                union(rangedSet("1", "3"), rangedSet("4", "6"))
-        ).compile().getPattern();
+                union(rangedSetStr("1", "3"), rangedSetStr("4", "6"))
+        ).compile().patternInstance();
         assertEquals(expression.pattern(), "[1-6]");
     }
 
     @Test
     public void itShouldDoASetIntersectionOperationOnInlineRegex() {
         Pattern expression = new RegexSynth(
-                intersection(rangedSet("1", "3"), rangedSet("4", "6"))
-        ).compile().getPattern();
+                intersection(rangedSetStr("1", "3"), rangedSetStr("4", "6"))
+        ).compile().patternInstance();
         assertEquals(expression.pattern(), "");
     }
 
     @Test
     public void itShouldDoASetDifferenceOperationOnInlineRegex() {
         Pattern expression = new RegexSynth(
-                difference(rangedSet("1", "3"), simpleSet("2", "4", "5", "6"))
-        ).compile().getPattern();
+                difference(rangedSetStr("1", "3"), simpleSetStr("2", "4", "5", "6"))
+        ).compile().patternInstance();
         assertEquals(expression.pattern(), "[13]");
     }
 
     @Test
     public void itShouldAppendANonNegatedUnicodeClassesToASetExpression() {
         final Pattern expression = new RegexSynth(
-                includeUnicodeScript(simpleSet("-", "."), UnicodeScript.SINHALA, false)
-        ).compile().getPattern();
+                includeUnicodeScript(simpleSetStr("-", "."), UnicodeScript.SINHALA, false)
+        ).compile().patternInstance();
         System.out.println(expression.pattern());
         assertEquals(expression.pattern(), "[\\-.\\p{Sinhala}]");
     }
@@ -92,8 +92,8 @@ public final class SetExpressionTest {
     @Test
     public void itShouldAppendANegatedUnicodeClassesToASetExpression() {
         final Pattern expression = new RegexSynth(
-                includeUnicodeScript(simpleSet("-", "."), UnicodeScript.SINHALA, true)
-        ).compile().getPattern();
+                includeUnicodeScript(simpleSetStr("-", "."), UnicodeScript.SINHALA, true)
+        ).compile().patternInstance();
         System.out.println(expression.pattern());
         assertEquals(expression.pattern(), "[\\-.\\P{Sinhala}]");
     }

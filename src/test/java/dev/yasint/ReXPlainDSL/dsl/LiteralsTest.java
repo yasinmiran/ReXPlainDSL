@@ -14,7 +14,7 @@ public final class LiteralsTest {
     public void itShouldEscapeAllSpecialCharacters() {
         Pattern pattern = new RegexSynth(
                 literal("https://swtch.com/~rsc/regexp&id=1")
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(pattern.pattern(), "https:\\/\\/swtch\\.com\\/~rsc\\/regexp&id\\=1");
     }
 
@@ -22,7 +22,7 @@ public final class LiteralsTest {
     public void itShouldCreateStrictQuoteString() {
         Pattern pattern = new RegexSynth(
                 quotedLiteral("https://swtch.com/~rsc/regexp&id=1")
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(pattern.pattern(), "\\Qhttps://swtch.com/~rsc/regexp&id=1\\E");
     }
 
@@ -30,7 +30,7 @@ public final class LiteralsTest {
     public void itShouldCreateANonNegatedUnicodeScriptBlock() {
         Pattern pattern = new RegexSynth(
                 unicodeScriptLiteral(UnicodeScript.SINHALA, false)
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(pattern.pattern(), "\\p{Sinhala}");
     }
 
@@ -38,7 +38,7 @@ public final class LiteralsTest {
     public void itShouldCreateANegatedUnicodeScriptBlock() {
         Pattern pattern = new RegexSynth(
                 unicodeScriptLiteral(UnicodeScript.ARMENIAN, true)
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(pattern.pattern(), "\\P{Armenian}");
     }
 

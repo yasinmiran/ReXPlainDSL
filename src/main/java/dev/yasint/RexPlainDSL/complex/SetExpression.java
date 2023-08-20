@@ -131,7 +131,7 @@ public class SetExpression implements Expression {
     /**
      * This allows you to include unicode blocks to a set expression.
      * Note that when a block is included to a set. It does not
-     * check for ranges, it simply append the correct syntax to
+     * check for ranges, it simply appends the correct syntax to
      * the set expression. i.e. [0-9A-Z\p{Arabic}]
      *
      * @param negated whether this unicode block is negated or not

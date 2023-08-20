@@ -18,7 +18,7 @@ public final class GroupsTest {
     public void itShouldCreateANonCapturingGroup() {
         final Pattern pattern = new RegexSynth(
                 nonCaptureGroup(digit())
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(pattern.pattern(), "(?:[0-9])");
     }
 
@@ -26,7 +26,7 @@ public final class GroupsTest {
     public void itShouldCreateACapturingGroup() {
         final Pattern pattern = new RegexSynth(
                 nonCaptureGroup(union(digit(), punctuation()))
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(pattern.pattern(), "(?:[!-@[-\\`{-~])");
     }
 
@@ -34,7 +34,7 @@ public final class GroupsTest {
     public void itShouldCreateANamedCaptureGroup() {
         final Pattern pattern = new RegexSynth(
                 namedCaptureGroup("someName", union(word(), punctuation()))
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(pattern.pattern(), "(?P<someName>[!-~])");
     }
 

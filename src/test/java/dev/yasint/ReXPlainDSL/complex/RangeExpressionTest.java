@@ -14,7 +14,7 @@ public final class RangeExpressionTest {
         int start = 65555, end = 78000;
         Pattern expression = new RegexSynth(
                 integerRange(start, end)
-        ).compile().getPattern();
+        ).compile().patternInstance();
         for (int i = start; i <= end; i++) {
             assertTrue(expression.matches(String.valueOf(i)));
         }

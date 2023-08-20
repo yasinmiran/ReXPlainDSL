@@ -1,9 +1,7 @@
 package dev.yasint.RexPlainDSL.util;
 
 import com.google.re2j.Pattern;
-import dev.yasint.RexPlainDSL.api.Expression;
 import dev.yasint.RexPlainDSL.exceptions.InvalidGroupNameException;
-import dev.yasint.RexPlainDSL.complex.SetExpression;
 
 import static dev.yasint.RexPlainDSL.api.MetaCharacters.BACKSLASH;
 
@@ -66,7 +64,7 @@ public final class Common {
 
     /**
      * Converts a given character to its codepoint value. If the
-     * the character is an empty string the min value (NULL) will
+     * character is an empty string the min value (NULL) will
      * be returned.
      *
      * @param character as a string (supplementary/bmp) char
@@ -77,10 +75,6 @@ public final class Common {
             return character.codePointAt(0);
         }
         return Character.MIN_VALUE;
-    }
-
-    public static boolean isNotASetExpression(final Expression target) {
-        return !(target instanceof SetExpression);
     }
 
 }

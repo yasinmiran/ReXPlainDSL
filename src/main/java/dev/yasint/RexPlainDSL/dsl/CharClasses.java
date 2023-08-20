@@ -1,16 +1,15 @@
 package dev.yasint.RexPlainDSL.dsl;
 
 import dev.yasint.RexPlainDSL.api.Expression;
+import dev.yasint.RexPlainDSL.complex.SetExpression;
 import dev.yasint.RexPlainDSL.exceptions.GenericException;
 import dev.yasint.RexPlainDSL.exceptions.SetElementException;
-import dev.yasint.RexPlainDSL.complex.SetExpression;
 import dev.yasint.RexPlainDSL.unicode.UnicodeScript;
 import dev.yasint.RexPlainDSL.util.Common;
 
 import java.util.Objects;
 
 import static dev.yasint.RexPlainDSL.api.MetaCharacters.PERIOD;
-import static dev.yasint.RexPlainDSL.util.Common.isNotASetExpression;
 
 /**
  * Contains all the set constructs and character classes.
@@ -28,8 +27,9 @@ public final class CharClasses {
      * @return match anything
      */
     public static Expression anything() {
-        return simpleSet(PERIOD);
+        return simpleSetCp(PERIOD);
     }
+
 
     // Set Operations
 
@@ -42,10 +42,9 @@ public final class CharClasses {
      * @return negated set expression
      */
     public static Expression negated(final Expression set) {
-        if (isNotASetExpression(set)) {
-            throw new GenericException("must be a set expression");
+        if (set instanceof SetExpression) {
+            ((SetExpression) set).negate();
         }
-        ((SetExpression) set).negate();
         return set;
     }
 
@@ -57,28 +56,28 @@ public final class CharClasses {
      * @return result
      */
     public static Expression union(final Expression setA, final Expression setB) {
-        if (isNotASetExpression(setA) || isNotASetExpression(setB)) {
+        if ((!(setA instanceof SetExpression)) || (!(setB instanceof SetExpression))) {
             throw new GenericException("union only supported for set expressions");
         }
         return ((SetExpression) setA).union((SetExpression) setB);
     }
 
     public static Expression difference(final Expression setA, final Expression setB) {
-        if (isNotASetExpression(setA) || isNotASetExpression(setB)) {
+        if ((!(setA instanceof SetExpression)) || (!(setB instanceof SetExpression))) {
             throw new GenericException("difference only supported for set expressions");
         }
         return ((SetExpression) setA).difference((SetExpression) setB);
     }
 
     public static Expression intersection(final Expression setA, final Expression setB) {
-        if (isNotASetExpression(setA) || isNotASetExpression(setB)) {
+        if ((!(setA instanceof SetExpression)) || (!(setB instanceof SetExpression))) {
             throw new GenericException("intersection only supported for set expressions");
         }
         return ((SetExpression) setA).intersection((SetExpression) setB);
     }
 
     public static Expression includeUnicodeScript(final Expression set, final UnicodeScript script, final boolean negated) {
-        if (isNotASetExpression(set)) {
+        if (!(set instanceof SetExpression)) {
             throw new GenericException("includeUnicodeScript only supported for set expressions");
         }
         return ((SetExpression) set).withUnicodeClass(script, negated);
@@ -93,9 +92,12 @@ public final class CharClasses {
      * @param to   ending char inclusive (surrogates or bmp)
      * @return set expression
      */
-    public static Expression rangedSet(final String from, final String to) {
+    public static Expression rangedSetStr(final String from, final String to) {
         if (from == null || to == null)
             throw new SetElementException("set range elements cannot be null");
+        if (from.length() > 2 || to.length() > 2) {
+            throw new SetElementException("expected bmp or astral character");
+        }
         final SetExpression set = new SetExpression(false);
         set.addRange(Common.toCodepoint(from), Common.toCodepoint(to));
         return set;
@@ -108,7 +110,7 @@ public final class CharClasses {
      * @param codepointB ending codepoint inclusive
      * @return set expression
      */
-    public static Expression rangedSet(final int codepointA, final int codepointB) {
+    public static Expression rangedSetCp(final int codepointA, final int codepointB) {
         final SetExpression set = new SetExpression(false);
         set.addRange(codepointA, codepointB);
         return set;
@@ -123,11 +125,10 @@ public final class CharClasses {
      * @param characters characters (surrogates or bmp)
      * @return set expression
      */
-    public static Expression simpleSet(final String... characters) {
+    public static Expression simpleSetStr(final String... characters) {
         final SetExpression set = new SetExpression(false);
         for (final String c : Objects.requireNonNull(characters)) {
             if (c.length() > 2) {
-                // only accepts valid bmp or astral symbols
                 throw new SetElementException("expected bmp or astral codepoint");
             }
             set.addChar(Common.toCodepoint(c));
@@ -139,7 +140,7 @@ public final class CharClasses {
      * @param codepoints codepoints
      * @return set expression
      */
-    public static Expression simpleSet(final int... codepoints) {
+    public static Expression simpleSetCp(final int... codepoints) {
         final SetExpression set = new SetExpression(false);
         for (final int c : Objects.requireNonNull(codepoints))
             set.addChar(c);
@@ -172,7 +173,7 @@ public final class CharClasses {
          * @return lowercase charclass
          */
         public static Expression lowercase() {
-            return rangedSet("a", "z");
+            return rangedSetStr("a", "z");
         }
 
         /**
@@ -183,7 +184,7 @@ public final class CharClasses {
          * @return uppercase charclass
          */
         public static Expression uppercase() {
-            return rangedSet("A", "Z");
+            return rangedSetStr("A", "Z");
         }
 
         /**
@@ -192,7 +193,7 @@ public final class CharClasses {
          * @return ascii charset
          */
         public static Expression ascii() {
-            return rangedSet(0x00, 0x7F);
+            return rangedSetCp(0x00, 0x7F);
         }
 
         /**
@@ -200,8 +201,8 @@ public final class CharClasses {
          *
          * @return ascii charset
          */
-        public static Expression ascii2() {
-            return rangedSet(0x00, 0xFF);
+        public static Expression asciiExtended() {
+            return rangedSetCp(0x00, 0xFF);
         }
 
         /**
@@ -221,7 +222,7 @@ public final class CharClasses {
          * @return numeric charclass
          */
         public static Expression digit() {
-            return rangedSet("0", "9");
+            return rangedSetStr("0", "9");
         }
 
         /**
@@ -251,7 +252,7 @@ public final class CharClasses {
          */
         public static Expression punctuation() {
             final String elements = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
-            return simpleSet(elements.split("")/*split into char*/);
+            return simpleSetStr(elements.split("")/*split into char*/);
         }
 
         /**
@@ -271,7 +272,7 @@ public final class CharClasses {
          * @return printable charclass
          */
         public static Expression printable() {
-            return union(graphical(), simpleSet(0x20/*space*/));
+            return union(graphical(), simpleSetCp(0x20/*space*/));
         }
 
         /**
@@ -281,7 +282,7 @@ public final class CharClasses {
          * @return blank-space charclass
          */
         public static Expression blank() {
-            return simpleSet(0x09/*h-tab*/, 0x20/*space*/);
+            return simpleSetCp(0x09/*h-tab*/, 0x20/*space*/);
         }
 
         /**
@@ -291,8 +292,8 @@ public final class CharClasses {
          */
         public static Expression hexDigit() {
             return union(
-                    rangedSet("A", "F"),
-                    union(digit(), rangedSet("a", "f"))
+                    rangedSetStr("A", "F"),
+                    union(digit(), rangedSetStr("a", "f"))
             );
         }
 
@@ -305,7 +306,7 @@ public final class CharClasses {
          */
         public static Expression whitespace() {
             // following codepoints as [ \t\n\v\f\r] 0x0B == \v
-            return simpleSet(0x20, 0x9, 0xA, 0xB, 0xC, 0xD);
+            return simpleSetCp(0x20, 0x9, 0xA, 0xB, 0xC, 0xD);
         }
 
         /**
@@ -328,7 +329,7 @@ public final class CharClasses {
          * @return word charclass
          */
         public static Expression word() {
-            return union(alphanumeric(), simpleSet("_"));
+            return union(alphanumeric(), simpleSetStr("_"));
         }
 
         /**
@@ -348,7 +349,7 @@ public final class CharClasses {
          * @return control charclass
          */
         public static Expression control() {
-            return union(rangedSet(0x0, 0x1F), simpleSet(0x7f));
+            return union(rangedSetCp(0x0, 0x1F), simpleSetCp(0x7f));
         }
 
     }
@@ -360,52 +361,52 @@ public final class CharClasses {
     public static class EscapeSequences {
 
         public static Expression space() {
-            return simpleSet(" ");
+            return simpleSetStr(" ");
         }
 
         public static Expression backslash() {
-            return simpleSet("\\"); // \
+            return simpleSetStr("\\"); // \
         }
 
         public static Expression doubleQuotes() {
-            return simpleSet("\""); // "
+            return simpleSetStr("\""); // "
         }
 
         public static Expression singleQuote() {
-            return simpleSet("'"); // '
+            return simpleSetStr("'"); // '
         }
 
         public static Expression backtick() {
-            return simpleSet("`"); // `
+            return simpleSetStr("`"); // `
         }
 
         public static Expression bell() {
-            return simpleSet(0x07); // \a
+            return simpleSetCp(0x07); // \a
         }
 
         public static Expression horizontalTab() {
             // \h 	A horizontal whitespace character: [ \t\xA0\u1680\u180e\u2000-\u200a\u202f\u205f\u3000]
             // \H 	A non-horizontal whitespace character: [^\h]
-            return simpleSet(0x09); // \t
+            return simpleSetCp(0x09); // \t
         }
 
         public static Expression linebreak() {
-            return simpleSet(0x0A); // \n
+            return simpleSetCp(0x0A); // \n
         }
 
         public static Expression verticalTab() {
             // Re consider:
             // \v 	A vertical whitespace character: [\n\x0B\f\r\x85\u2028\u2029]
             // \V 	A non-vertical whitespace character: [^\v]
-            return simpleSet(0x0B);
+            return simpleSetCp(0x0B);
         }
 
-        public static Expression formfeed() {
-            return simpleSet(0x0C); // \f
+        public static Expression formFeed() {
+            return simpleSetCp(0x0C); // \f
         }
 
         public static Expression carriageReturn() {
-            return simpleSet(0x0D); // \r
+            return simpleSetCp(0x0D); // \r
         }
 
     }

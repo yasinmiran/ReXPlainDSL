@@ -1,6 +1,7 @@
 package dev.yasint.ReXPlainDSL.performance;
 
 import dev.yasint.RexPlainDSL.api.Expression;
+import dev.yasint.RexPlainDSL.dsl.CharClasses;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -11,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import static dev.yasint.RexPlainDSL.dsl.CharClasses.rangedSet;
 import static dev.yasint.RexPlainDSL.dsl.Numeric.integerRange;
 import static dev.yasint.RexPlainDSL.dsl.Operators.either;
 
@@ -98,7 +98,7 @@ public class PerfTest {
         log("set character count: ", new BigInteger(Integer.toHexString(codepointB), 16).toString());
 
         long startTime = System.currentTimeMillis(); // record start time
-        Expression set = rangedSet(codepointA, codepointB);
+        Expression set = CharClasses.rangedSetCp(codepointA, codepointB);
         runtime.gc(); // clear the memory
         long memory = runtime.totalMemory() - runtime.freeMemory(); // used memory
         long stopTime = System.currentTimeMillis(); // mark end time

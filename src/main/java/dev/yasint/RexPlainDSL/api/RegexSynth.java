@@ -54,13 +54,13 @@ public final class RegexSynth {
         return this;
     }
 
-    public Pattern getPattern() {
+    public Pattern patternInstance() {
         if (this.pattern == null)
             throw new NullPointerException("pattern instance is null. invoke compile(Flags...)");
         return pattern;
     }
 
-    public String getExpression() {
+    public String regexExpression() {
         return expression;
     }
 

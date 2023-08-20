@@ -15,7 +15,7 @@ public final class OperatorsTest {
     public void itShouldCreateAlternationBetweenMultipleExpressions() {
         Pattern pattern = new RegexSynth(
                 either(digit(), uppercase(), lowercase())
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(pattern.pattern(), "(?:[0-9]|[A-Z]|[a-z])");
     }
 
@@ -23,7 +23,7 @@ public final class OperatorsTest {
     public void itShouldCreateAlternationBetweenMultipleStrings() {
         Pattern pattern = new RegexSynth(
                 either("http", "https", "ws", "wss")
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(pattern.pattern(), "(?:https?|wss?)");
     }
 
@@ -31,7 +31,7 @@ public final class OperatorsTest {
     public void itShouldConcatMultipleExpressionsIntoOne() {
         Pattern pattern = new RegexSynth(
                 concat(digit(), punctuation())
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(pattern.pattern(), "[0-9][!-\\/:-@[-\\`{-~]");
     }
 

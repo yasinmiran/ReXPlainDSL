@@ -3,12 +3,12 @@ package dev.yasint.ReXPlainDSL.dsl;
 import com.google.re2j.Pattern;
 import dev.yasint.RexPlainDSL.api.Expression;
 import dev.yasint.RexPlainDSL.api.RegexSynth;
+import dev.yasint.RexPlainDSL.dsl.CharClasses;
 import org.junit.jupiter.api.Test;
 
 import static dev.yasint.RexPlainDSL.dsl.CharClasses.EscapeSequences.*;
 import static dev.yasint.RexPlainDSL.dsl.CharClasses.Posix.*;
 import static dev.yasint.RexPlainDSL.dsl.CharClasses.anything;
-import static dev.yasint.RexPlainDSL.dsl.CharClasses.rangedSet;
 import static dev.yasint.RexPlainDSL.dsl.Repetition.exactly;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,7 +18,7 @@ public final class CharClassesTest {
     public void itShouldAppendMatchAnyCharacterAtPosition() {
         final Pattern expression = new RegexSynth(
                 exactly(5, anything())
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(expression.pattern(), "(?:.){5}");
     }
 
@@ -120,6 +120,7 @@ public final class CharClassesTest {
 
     @Test
     public void itShouldReturnCorrectEscapeSequence() {
+
         final Expression backslash = backslash();
         final Expression doubleQuotes = doubleQuotes();
         final Expression singleQuote = singleQuote();
@@ -128,8 +129,9 @@ public final class CharClassesTest {
         final Expression horizontalTab = horizontalTab();
         final Expression linebreak = linebreak();
         final Expression verticalTab = verticalTab();
-        final Expression formFeed = formfeed();
+        final Expression formFeed = formFeed();
         final Expression carriageReturn = carriageReturn();
+
         assertEquals(backslash.toRegex().toString(), "\\\\");
         assertEquals(doubleQuotes.toRegex().toString(), "\\\"");
         assertEquals(singleQuote.toRegex().toString(), "\\'");
@@ -140,6 +142,7 @@ public final class CharClassesTest {
         assertEquals(verticalTab.toRegex().toString(), "\\x0B");
         assertEquals(formFeed.toRegex().toString(), "\\x0C");
         assertEquals(carriageReturn.toRegex().toString(), "\\x0D");
+
     }
 
     @Test
@@ -150,7 +153,7 @@ public final class CharClassesTest {
 
     @Test
     public void itShouldCreateAllExtendedAsciiCharClassRange() {
-        final Expression ascii = ascii2();
+        final Expression ascii = asciiExtended();
         assertEquals(ascii.toRegex().toString(), "[\\x00-ÿ]");
     }
 
@@ -158,7 +161,7 @@ public final class CharClassesTest {
     public void itShouldCreateARangedCharClassWhenGivenTwoCodepoints() {
         final String from = "\uD83C\uDF11"; // 🌑
         final String to = "\uD83C\uDF1D"; // 🌝
-        final Expression regexSet = rangedSet(from, to);
+        final Expression regexSet = CharClasses.rangedSetStr(from, to);
         assertEquals(regexSet.toRegex().toString(), "[\\x{1f311}-\\x{1f31d}]");
     }
 

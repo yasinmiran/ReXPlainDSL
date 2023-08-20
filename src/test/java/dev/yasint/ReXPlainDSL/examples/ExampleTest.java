@@ -68,7 +68,7 @@ public final class ExampleTest {
         final Pattern pattern = new RegexSynth(
                 DATE, DELIMITER, DEPT_CODE, DELIMITER,
                 ITEM_CODE, DELIMITER, ITEM_S_COUNT
-        ).compile().getPattern();
+        ).compile().patternInstance();
 
         assertEquals(pattern.pattern(), "((?:2020|201[0-9])\\-(?:0?(?:1[0-2]|[1-9]))\\-(?:0?(?:3[01]" +
                 "|[12][0-9]|[1-9]))) ((?:P[AE]|S(?:SE?|O))) ((?:68[0-5][0-9]{2}|6[0-7][0-9]{3}|59[0-9]" +
@@ -95,7 +95,7 @@ public final class ExampleTest {
                 DEPARTMENT_CODE, DELIMITER,
                 ITEM_STOCK_COUNT, DELIMITER,
                 DATE
-        ).compile().getPattern();
+        ).compile().patternInstance();
 
         // Matches any string in the set {K, S, KS, KLE, KLL}, followed by two asterisks
         // and 0 or 9 digit 3 times, followed by two asterisks, and matches date formats like 2020-11-31
@@ -121,7 +121,7 @@ public final class ExampleTest {
                         literal("-"), // Delimiter
                         captureGroup(leadingZero(integerRange(1, 31))) // Day - group 2
                 )
-        ).compile().getPattern();
+        ).compile().patternInstance();
 
         assertEquals(expression.pattern(),
                 "^(?:202[0-3]|201[2-9])\\-((?:A(?:pr|ug)|Dec|" +
@@ -135,7 +135,7 @@ public final class ExampleTest {
 
         Expression protocol = namedCaptureGroup("protocol", either("http", "https", "ftp"));
         Expression sub_domain = namedCaptureGroup("subDomain", oneOrMoreTimes(
-                union(alphanumeric(), simpleSet("-", ".")))
+                union(alphanumeric(), simpleSetStr("-", ".")))
         );
         Expression tld = namedCaptureGroup("tld", between(2, 4, alphabetic()));
         Expression port = optional(namedCaptureGroup("port", literal(":"), integerRange(1, 65535)));
@@ -147,7 +147,7 @@ public final class ExampleTest {
                         protocol, literal("://"), sub_domain, literal("."), tld,
                         port, optional(literal("/")), resource
                 )
-        ).compile().getPattern();
+        ).compile().patternInstance();
 
         assertEquals(expression.pattern(), "^(?P<protocol>(?:ftp|https?)):\\/\\/(?P<subDomain>(?:[\\-.0-9A-Za-z])+)" +
                 "\\.(?P<tld>(?:[A-Za-z]){2,4})(?:(?P<port>:(?:6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]" +
@@ -165,7 +165,7 @@ public final class ExampleTest {
                         literal("."),
                         between(1, 3, digit())
                 )
-        ).compile().getPattern();
+        ).compile().patternInstance();
     }
 
     @Test
@@ -194,7 +194,7 @@ public final class ExampleTest {
                         optional(alpha),
                         literal(")")
                 )
-        ).compile().getPattern();
+        ).compile().patternInstance();
 
         System.out.println(rgbaExpression.pattern());
 

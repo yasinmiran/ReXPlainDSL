@@ -5,13 +5,12 @@ import dev.yasint.RexPlainDSL.exceptions.NumericRangeException;
 import dev.yasint.RexPlainDSL.complex.RangeExpression;
 
 import static dev.yasint.RexPlainDSL.api.MetaCharacters.QUESTION_MARK;
-import static dev.yasint.RexPlainDSL.dsl.CharClasses.rangedSet;
 import static dev.yasint.RexPlainDSL.dsl.Groups.nonCaptureGroup;
 
 public final class Numeric {
 
     /**
-     * Appends a optional zero to any expression where usually this is
+     * Appends an optional zero to any expression where usually this is
      * used with digits/ranges.
      *
      * @param another expression
@@ -38,8 +37,10 @@ public final class Numeric {
         if (from == to)
             return Literals.literal(String.valueOf(from));
         if (from >= 0 && to <= 9)
-            return rangedSet(String.valueOf(from), String.valueOf(to));
-        return nonCaptureGroup(new RangeExpression(from, to));
+            return CharClasses.rangedSetStr(String.valueOf(from), String.valueOf(to));
+        RangeExpression rangeExpression = new RangeExpression(from, to);
+        StringBuilder regex = rangeExpression.toRegex();
+        return nonCaptureGroup(rangeExpression);
     }
 
 }

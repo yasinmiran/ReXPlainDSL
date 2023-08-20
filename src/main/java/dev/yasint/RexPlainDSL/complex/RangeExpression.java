@@ -9,7 +9,6 @@ import static dev.yasint.RexPlainDSL.api.MetaCharacters.*;
 
 /**
  * Synthesis :: Regular Expression Integer Range
- *
  * This generates a regular expression number range given
  * inclusive start and end integers. This implementation's
  * running time is O(log n).
@@ -20,7 +19,7 @@ public class RangeExpression implements Expression {
     private final int _rEnd;
 
     /**
-     * Creates a int range expression
+     * Creates an int range expression
      *
      * @param _rStart int start inclusive
      * @param _rEnd   int end inclusive

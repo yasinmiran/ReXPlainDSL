@@ -3,6 +3,7 @@ package dev.yasint.ReXPlainDSL.examples;
 import com.google.re2j.Pattern;
 import dev.yasint.RexPlainDSL.api.Expression;
 import dev.yasint.RexPlainDSL.api.RegexSynth;
+import dev.yasint.RexPlainDSL.dsl.CharClasses;
 import org.junit.jupiter.api.Test;
 
 import static dev.yasint.RexPlainDSL.dsl.Anchors.exactLineMatch;
@@ -10,7 +11,6 @@ import static dev.yasint.RexPlainDSL.dsl.Anchors.exactWordBoundary;
 import static dev.yasint.RexPlainDSL.dsl.CharClasses.EscapeSequences.space;
 import static dev.yasint.RexPlainDSL.dsl.CharClasses.Posix.digit;
 import static dev.yasint.RexPlainDSL.dsl.CharClasses.Posix.hexDigit;
-import static dev.yasint.RexPlainDSL.dsl.CharClasses.simpleSet;
 import static dev.yasint.RexPlainDSL.dsl.Groups.*;
 import static dev.yasint.RexPlainDSL.dsl.Literals.literal;
 import static dev.yasint.RexPlainDSL.dsl.Numeric.integerRange;
@@ -24,7 +24,7 @@ public class VivaDemoTest {
 
     @Test
     public void test() {
-        String set = (simpleSet("a", "b", "c", "d", "e").toRegex().toString());
+        String set = (CharClasses.simpleSetStr("a", "b", "c", "d", "e").toRegex().toString());
         System.out.println(integerRange(0, 100).toRegex().toString());
     }
 
@@ -47,7 +47,7 @@ public class VivaDemoTest {
                                 integerRange(10, 31)
                         ) // Day
                 ))
-        ).compile().getPattern();
+        ).compile().patternInstance();
 
         assertEquals("(^(?:2020|201[2-9])\\-(?:Apr|Feb|J(?:an|u[ln])|Ma[ry]|" +
                 "Nov|Oct|Sep)\\-(?:(?:0?[1-9])|(?:3[01]|[12][0-9]))$)", expression.pattern());
@@ -120,7 +120,7 @@ public class VivaDemoTest {
 
         Pattern expression = new RegexSynth(
                 either(RGBA, HSLA, HEX)
-        ).compile().getPattern();
+        ).compile().patternInstance();
 
         System.out.println(expression.pattern());
 
@@ -159,7 +159,7 @@ public class VivaDemoTest {
         final Pattern pattern = new RegexSynth(
                 DATE, DELIMITER, DEPT_CODE, DELIMITER,
                 ITEM_CODE, DELIMITER, ITEM_S_COUNT
-        ).compile().getPattern();
+        ).compile().patternInstance();
 
         assertEquals(pattern.pattern(), "((?:2020|201[0-9])\\-(?:0?(?:1[0-2]|[1-9]))\\-(?:0?(?:3[01]" +
                 "|[12][0-9]|[1-9]))) ((?:P[AE]|S(?:SE?|O))) ((?:68[0-5][0-9]{2}|6[0-7][0-9]{3}|59[0-9]" +

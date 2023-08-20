@@ -20,7 +20,7 @@ public final class AnchorsTest {
         final Pattern expression = new RegexSynth(
                 captureGroup(wordBoundary()
                         .debug(System.out::println), word())
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(expression.pattern(), "(\\b[0-9A-Z_a-z])");
     }
 
@@ -29,7 +29,7 @@ public final class AnchorsTest {
         final Pattern expression = new RegexSynth(
                 nonWordBoundary(),
                 word()
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(expression.pattern(), "\\B[0-9A-Z_a-z]");
     }
 
@@ -38,7 +38,7 @@ public final class AnchorsTest {
         final Pattern expression = new RegexSynth(
                 startOfLine(),
                 word()
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(expression.pattern(), "^[0-9A-Z_a-z]");
     }
 
@@ -48,7 +48,7 @@ public final class AnchorsTest {
                 startOfLine(),
                 oneOrMoreTimes(word()),
                 endOfLine(false)
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(expression.pattern(), "^(?:[0-9A-Z_a-z])+$");
     }
 
@@ -58,7 +58,7 @@ public final class AnchorsTest {
                 startOfLine(),
                 oneOrMoreTimes(word()),
                 endOfLine(true)
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(expression.pattern(), "^(?:[0-9A-Z_a-z])+\\x0D?$");
     }
 
@@ -67,7 +67,7 @@ public final class AnchorsTest {
         final Pattern expression = new RegexSynth(
                 startOfText(),
                 word()
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(expression.pattern(), "\\A[0-9A-Z_a-z]");
     }
 
@@ -76,7 +76,7 @@ public final class AnchorsTest {
         final Pattern expression = new RegexSynth(
                 word(),
                 endOfText()
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(expression.pattern(), "[0-9A-Z_a-z]\\z");
     }
 
@@ -87,7 +87,7 @@ public final class AnchorsTest {
                         wordBoundary(),
                         word()
                 )
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(expression.pattern(), "^\\b[0-9A-Z_a-z]$");
     }
 
@@ -99,7 +99,7 @@ public final class AnchorsTest {
                         oneOrMoreTimes(alphabetic()),
                         literal("p")
                 )
-        ).compile().getPattern();
+        ).compile().patternInstance();
         assertEquals(expression.pattern(), "\\bp(?:[A-Za-z])+p\\b");
     }
 
