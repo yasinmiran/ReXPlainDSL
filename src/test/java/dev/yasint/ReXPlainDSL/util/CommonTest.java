@@ -36,10 +36,10 @@ public final class CommonTest {
 
     @Test
     public void itShouldEscapeAllTheSpecialCharsAndEscapeSupplementaryCodepoints() {
-        String someString = "Hi, this is developed by // Yazeen. 🌚💀|{}";
+        String someString = "Hi, this is developed by // Yasin. 🌚💀|{}";
         assertEquals(
                 asRegexLiteral(someString),
-                "Hi, this is developed by \\/\\/ Yazeen\\. \\x{1f31a}\\x{1f480}\\|\\{\\}"
+                "Hi, this is developed by \\/\\/ Yasin\\. \\x{1f31a}\\x{1f480}\\|\\{\\}"
         );
     }
 
