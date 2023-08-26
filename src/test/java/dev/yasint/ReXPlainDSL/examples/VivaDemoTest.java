@@ -2,8 +2,9 @@ package dev.yasint.ReXPlainDSL.examples;
 
 import com.google.re2j.Pattern;
 import dev.yasint.RexPlainDSL.api.Expression;
-import dev.yasint.RexPlainDSL.api.RegexSynth;
+import dev.yasint.RexPlainDSL.api.ReXPlainDSL;
 import dev.yasint.RexPlainDSL.dsl.CharClasses;
+import dev.yasint.RexPlainDSL.dsl.Operators;
 import org.junit.jupiter.api.Test;
 
 import static dev.yasint.RexPlainDSL.dsl.Anchors.exactLineMatch;
@@ -15,7 +16,6 @@ import static dev.yasint.RexPlainDSL.dsl.Groups.*;
 import static dev.yasint.RexPlainDSL.dsl.Literals.literal;
 import static dev.yasint.RexPlainDSL.dsl.Numeric.integerRange;
 import static dev.yasint.RexPlainDSL.dsl.Numeric.leadingZero;
-import static dev.yasint.RexPlainDSL.dsl.Operators.concat;
 import static dev.yasint.RexPlainDSL.dsl.Operators.either;
 import static dev.yasint.RexPlainDSL.dsl.Repetition.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,11 +36,11 @@ public class VivaDemoTest {
                 "Jul", /*"Aug",*/ "Sep", "Oct", "Nov", /*"Dec"*/
         };
 
-        final Pattern expression = new RegexSynth(
+        final Pattern expression = new ReXPlainDSL(
                 captureGroup(exactLineMatch( // Enclosed in ^...$
                         integerRange(2012, 2020), // Year
                         literal("-"), // Delimiter
-                        either(months), // Month abbreviations
+                        Operators.eitherStr(months), // Month abbreviations
                         literal("-"), // Delimiter
                         either(
                                 leadingZero(integerRange(1, 9)),
@@ -69,7 +69,7 @@ public class VivaDemoTest {
         );
         Expression code0to255 = integerRange(0, 255);
         Expression alphaValue = either(
-                concat(
+                Operators.concatMultiple(
                         optional(literal("0")),
                         literal("."),
                         between(1, 2, digit())
@@ -83,7 +83,7 @@ public class VivaDemoTest {
         // to match rgb or rgba color schemes:-
         // rgb(255,0,24), rgb(255, 0, 24), rgba(255, 0, 24, .5)
         Expression RGBA = namedCaptureGroup("rgba_codes",
-                either("rgb", "rgba"),
+                Operators.eitherStr("rgb", "rgba"),
                 literal("("),
                 code0to255, argDelimiter, // R  (can be further simplified to exactly(2, ...)
                 code0to255, argDelimiter, // G
@@ -111,14 +111,14 @@ public class VivaDemoTest {
         // to match hex notation color schemes:-
         // #FFFFFF or 0x00FFFF or #FFF
         Expression HEX = namedCaptureGroup("hex_codes",
-                either("#", "0x"),
+                Operators.eitherStr("#", "0x"),
                 either(
                         exactly(6, hexDigit()),
                         exactWordBoundary(exactly(3, hexDigit()))
                 )
         );
 
-        Pattern expression = new RegexSynth(
+        Pattern expression = new ReXPlainDSL(
                 either(RGBA, HSLA, HEX)
         ).compile().patternInstance();
 
@@ -150,13 +150,13 @@ public class VivaDemoTest {
                 leadingZero(integerRange(1, 12)), literal("-"),
                 leadingZero(integerRange(1, 31))
         );
-        final Expression DEPT_CODE = captureGroup(either("SO", "SS", "PE", "PA", "SSE")); // Department code
+        final Expression DEPT_CODE = captureGroup(Operators.eitherStr("SO", "SS", "PE", "PA", "SSE")); // Department code
         final Expression ITEM_CODE = captureGroup(integerRange(58499, 68599)); // Item code
         final Expression ITEM_S_COUNT = captureGroup(integerRange(100, 500)); // Item stock count
         final Expression DELIMITER = space(); // Delimiter
 
         // Compose all the segregated expressions into one
-        final Pattern pattern = new RegexSynth(
+        final Pattern pattern = new ReXPlainDSL(
                 DATE, DELIMITER, DEPT_CODE, DELIMITER,
                 ITEM_CODE, DELIMITER, ITEM_S_COUNT
         ).compile().patternInstance();

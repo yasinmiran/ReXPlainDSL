@@ -1,7 +1,7 @@
 package dev.yasint.ReXPlainDSL.dsl;
 
 import com.google.re2j.Pattern;
-import dev.yasint.RexPlainDSL.api.RegexSynth;
+import dev.yasint.RexPlainDSL.api.ReXPlainDSL;
 import dev.yasint.RexPlainDSL.exceptions.QuantifierException;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +14,7 @@ public final class RepetitionTest {
 
     @Test
     public void itShouldAppendOneOrMoreTimesQuantifierToExpression() {
-        Pattern expression = new RegexSynth(
+        Pattern expression = new ReXPlainDSL(
                 oneOrMoreTimes(digit())
         ).compile().patternInstance();
         assertEquals(expression.pattern(), "(?:[0-9])+");
@@ -22,7 +22,7 @@ public final class RepetitionTest {
 
     @Test
     public void itShouldAppendZeroOrMoreTimesQuantifierToExpression() {
-        Pattern expression = new RegexSynth(
+        Pattern expression = new ReXPlainDSL(
                 zeroOrMoreTimes(digit())
         ).compile().patternInstance();
         assertEquals(expression.pattern(), "(?:[0-9])*");
@@ -31,17 +31,17 @@ public final class RepetitionTest {
     @Test
     public void itShouldAppendExactlyOrMoreTimesQuantifierToExpression() {
         Pattern expression;
-        expression = new RegexSynth(exactlyOrMoreTimes(2, digit())).compile().patternInstance();
+        expression = new ReXPlainDSL(exactlyOrMoreTimes(2, digit())).compile().patternInstance();
         assertEquals(expression.pattern(), "(?:[0-9]){2,}");
-        expression = new RegexSynth(exactlyOrMoreTimes(0, digit())).compile().patternInstance();
+        expression = new ReXPlainDSL(exactlyOrMoreTimes(0, digit())).compile().patternInstance();
         assertEquals(expression.pattern(), "(?:[0-9])*");
-        expression = new RegexSynth(exactlyOrMoreTimes(1, digit())).compile().patternInstance();
+        expression = new ReXPlainDSL(exactlyOrMoreTimes(1, digit())).compile().patternInstance();
         assertEquals(expression.pattern(), "(?:[0-9])+");
     }
 
     @Test
     public void itShouldAppendOptionalQuantifierToExpression() {
-        Pattern expression = new RegexSynth(
+        Pattern expression = new ReXPlainDSL(
                 optional(digit())
         ).compile().patternInstance();
         assertEquals(expression.pattern(), "(?:[0-9])?");
@@ -49,7 +49,7 @@ public final class RepetitionTest {
 
     @Test
     public void itShouldAppendExactlyNQuantifierToExpression() {
-        Pattern expression = new RegexSynth(
+        Pattern expression = new ReXPlainDSL(
                 exactly(5, digit())
         ).compile().patternInstance();
         assertEquals(expression.pattern(), "(?:[0-9]){5}");
@@ -57,7 +57,7 @@ public final class RepetitionTest {
 
     @Test
     public void itShouldAppendBetweenQuantifierToExpression() {
-        Pattern expression = new RegexSynth(
+        Pattern expression = new ReXPlainDSL(
                 between(5, 10, digit())
         ).compile().patternInstance();
         assertEquals(expression.pattern(), "(?:[0-9]){5,10}");
@@ -65,7 +65,7 @@ public final class RepetitionTest {
 
     @Test
     public void itShouldAppendLazyQuantifierToExpression() {
-        Pattern expression = new RegexSynth(
+        Pattern expression = new ReXPlainDSL(
                 lazy(between(5, 10, digit()))
         ).compile().patternInstance();
         assertEquals(expression.pattern(), "(?:[0-9]){5,10}?");
@@ -175,7 +175,7 @@ public final class RepetitionTest {
     public void itShouldThrowAnExceptionWhenExactlyQuantifierIsRedundant() {
         Exception e = assertThrows(
                 QuantifierException.class,
-                () -> new RegexSynth(exactly(1, digit())).compile()
+                () -> new ReXPlainDSL(exactly(1, digit())).compile()
         );
         assertEquals(e.getMessage(), "redundant quantifier");
     }
@@ -184,7 +184,7 @@ public final class RepetitionTest {
     public void itShouldThrowAnExceptionWhenExactlyQuantifierAppliedExpressionIsRedundant() {
         Exception e = assertThrows(
                 QuantifierException.class,
-                () -> new RegexSynth(exactly(0, digit())).compile()
+                () -> new ReXPlainDSL(exactly(0, digit())).compile()
         );
         assertEquals(e.getMessage(), "redundant sub-sequence");
     }

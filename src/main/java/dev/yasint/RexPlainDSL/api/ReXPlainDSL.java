@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public final class RegexSynth {
+public final class ReXPlainDSL {
 
     private String expression;
     private Pattern pattern;
@@ -19,7 +19,7 @@ public final class RegexSynth {
      *
      * @param expressions sub-expressions
      */
-    public RegexSynth(final Expression... expressions) {
+    public ReXPlainDSL(final Expression... expressions) {
         this.expression = Arrays.stream(expressions)
                 .map(Expression::toRegex)
                 .collect(Collectors.joining());
@@ -47,11 +47,21 @@ public final class RegexSynth {
      * @param flags global modifiers
      * @return Re2J Pattern instance
      */
-    public RegexSynth compile(final Flags... flags) {
+    public ReXPlainDSL compile(final Flags... flags) {
         int fl = 0;
         for (final Flags flag : flags) fl += flag.val;
         this.pattern = Pattern.compile(this.expression, fl);
         return this;
+    }
+
+    public static Pattern compile(Flags[] flags, Expression... expressions) {
+        int fl = 0;
+        if (flags != null)
+            for (final Flags flag : flags) fl += flag.val;
+        String expression = Arrays.stream(expressions)
+                .map(Expression::toRegex)
+                .collect(Collectors.joining());
+        return Pattern.compile(expression, fl);
     }
 
     public Pattern patternInstance() {

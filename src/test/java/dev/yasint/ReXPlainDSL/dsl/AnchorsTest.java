@@ -1,7 +1,7 @@
 package dev.yasint.ReXPlainDSL.dsl;
 
 import com.google.re2j.Pattern;
-import dev.yasint.RexPlainDSL.api.RegexSynth;
+import dev.yasint.RexPlainDSL.api.ReXPlainDSL;
 import org.junit.jupiter.api.Test;
 
 import static dev.yasint.RexPlainDSL.dsl.Anchors.*;
@@ -17,7 +17,7 @@ public final class AnchorsTest {
 
     @Test
     public void itShouldAppendAWordBoundaryAtPosition() {
-        final Pattern expression = new RegexSynth(
+        final Pattern expression = new ReXPlainDSL(
                 captureGroup(wordBoundary()
                         .debug(System.out::println), word())
         ).compile().patternInstance();
@@ -26,7 +26,7 @@ public final class AnchorsTest {
 
     @Test
     public void itShouldAppendANonWordBoundaryAtPosition() {
-        final Pattern expression = new RegexSynth(
+        final Pattern expression = new ReXPlainDSL(
                 nonWordBoundary(),
                 word()
         ).compile().patternInstance();
@@ -35,7 +35,7 @@ public final class AnchorsTest {
 
     @Test
     public void itShouldAppendAStartOfLineAssertionAtPosition() {
-        final Pattern expression = new RegexSynth(
+        final Pattern expression = new ReXPlainDSL(
                 startOfLine(),
                 word()
         ).compile().patternInstance();
@@ -44,7 +44,7 @@ public final class AnchorsTest {
 
     @Test
     public void itShouldAppendEndOfLineAssertionAtPosition() {
-        final Pattern expression = new RegexSynth(
+        final Pattern expression = new ReXPlainDSL(
                 startOfLine(),
                 oneOrMoreTimes(word()),
                 endOfLine(false)
@@ -54,7 +54,7 @@ public final class AnchorsTest {
 
     @Test
     public void itShouldAppendEndOfLineAssertionWithOptionalCarriageReturnAtPosition() {
-        final Pattern expression = new RegexSynth(
+        final Pattern expression = new ReXPlainDSL(
                 startOfLine(),
                 oneOrMoreTimes(word()),
                 endOfLine(true)
@@ -64,7 +64,7 @@ public final class AnchorsTest {
 
     @Test
     public void itShouldAppendStartOfTextAssertionAtPosition() {
-        final Pattern expression = new RegexSynth(
+        final Pattern expression = new ReXPlainDSL(
                 startOfText(),
                 word()
         ).compile().patternInstance();
@@ -73,7 +73,7 @@ public final class AnchorsTest {
 
     @Test
     public void itShouldAppendEndOfTextAssertionAtPosition() {
-        final Pattern expression = new RegexSynth(
+        final Pattern expression = new ReXPlainDSL(
                 word(),
                 endOfText()
         ).compile().patternInstance();
@@ -82,7 +82,7 @@ public final class AnchorsTest {
 
     @Test
     public void itShouldWrapTheExpressionInLineMatcher() {
-        final Pattern expression = new RegexSynth(
+        final Pattern expression = new ReXPlainDSL(
                 exactLineMatch(
                         wordBoundary(),
                         word()
@@ -93,7 +93,7 @@ public final class AnchorsTest {
 
     @Test
     public void itShouldWrapTheExpressionInWordBoundary() {
-        final Pattern expression = new RegexSynth(
+        final Pattern expression = new ReXPlainDSL(
                 exactWordBoundary(
                         literal("p"),
                         oneOrMoreTimes(alphabetic()),

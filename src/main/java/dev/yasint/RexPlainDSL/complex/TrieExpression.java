@@ -98,7 +98,7 @@ public class TrieExpression implements Expression {
             return this.nodes.get(_char);
         }
 
-        private void synthesizeStringAlternations() {
+        private void appendStringAlternations() {
             // for each leaf node of this node (adjacent nodes)
             for (Map.Entry<String, Node> entry : this.nodes.entrySet()) {
                 // escape any special regular expression constructs is present
@@ -120,7 +120,7 @@ public class TrieExpression implements Expression {
             }
         }
 
-        private void synthesizeCharacterClasses() {
+        private void appendCharacterClasses() {
             this.hasCharacterClasses = alternations.isEmpty();
             if (charClasses.size() > 0) {
                 if (charClasses.size() == 1) {
@@ -142,8 +142,8 @@ public class TrieExpression implements Expression {
             if (this.nodes.containsKey(NULL_KEY) && this.nodes.size() == 1) {
                 return null; // Terminate; final state, means this is an null edge
             }
-            this.synthesizeStringAlternations();
-            this.synthesizeCharacterClasses();
+            this.appendStringAlternations();
+            this.appendCharacterClasses();
 
             final StringBuilder expression = new StringBuilder();
 

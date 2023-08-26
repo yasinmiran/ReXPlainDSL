@@ -35,8 +35,8 @@ public final class Operators {
      * @param strings alternation strings
      * @return wrapped alternated strings
      */
-    public static Expression either(final String... strings) {
-        return either(new HashSet<>(Arrays.asList(strings)));
+    public static Expression eitherStr(final String... strings) {
+        return eitherStrSet(new HashSet<>(Arrays.asList(strings)));
     }
 
     /**
@@ -46,7 +46,7 @@ public final class Operators {
      * @param strings alternation strings
      * @return wrapped alternated strings
      */
-    public static Expression either(final Set<String> strings) {
+    public static Expression eitherStrSet(final Set<String> strings) {
         final TrieExpression trie = new TrieExpression();
         trie.insertAll(strings);
         return trie;
@@ -72,7 +72,7 @@ public final class Operators {
      * @param expressions multiple expressions
      * @return concatenated expressions.
      */
-    public static Expression concat(final Expression... expressions) {
+    public static Expression concatMultiple(final Expression... expressions) {
         return () -> Arrays.stream(Objects.requireNonNull(expressions))
                 .map(Expression::toRegex)
                 .reduce(new StringBuilder(), StringBuilder::append);

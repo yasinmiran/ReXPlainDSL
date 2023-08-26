@@ -2,7 +2,7 @@ package dev.yasint.ReXPlainDSL.complex;
 
 import com.google.re2j.Pattern;
 import dev.yasint.RexPlainDSL.api.Expression;
-import dev.yasint.RexPlainDSL.api.RegexSynth;
+import dev.yasint.RexPlainDSL.api.ReXPlainDSL;
 import dev.yasint.RexPlainDSL.unicode.UnicodeScript;
 import org.junit.jupiter.api.Test;
 
@@ -58,7 +58,7 @@ public final class SetExpressionTest {
 
     @Test
     public void itShouldDoASetUnionOperationOnInlineRegex() {
-        Pattern expression = new RegexSynth(
+        Pattern expression = new ReXPlainDSL(
                 union(rangedSetStr("1", "3"), rangedSetStr("4", "6"))
         ).compile().patternInstance();
         assertEquals(expression.pattern(), "[1-6]");
@@ -66,7 +66,7 @@ public final class SetExpressionTest {
 
     @Test
     public void itShouldDoASetIntersectionOperationOnInlineRegex() {
-        Pattern expression = new RegexSynth(
+        Pattern expression = new ReXPlainDSL(
                 intersection(rangedSetStr("1", "3"), rangedSetStr("4", "6"))
         ).compile().patternInstance();
         assertEquals(expression.pattern(), "");
@@ -74,7 +74,7 @@ public final class SetExpressionTest {
 
     @Test
     public void itShouldDoASetDifferenceOperationOnInlineRegex() {
-        Pattern expression = new RegexSynth(
+        Pattern expression = new ReXPlainDSL(
                 difference(rangedSetStr("1", "3"), simpleSetStr("2", "4", "5", "6"))
         ).compile().patternInstance();
         assertEquals(expression.pattern(), "[13]");
@@ -82,7 +82,7 @@ public final class SetExpressionTest {
 
     @Test
     public void itShouldAppendANonNegatedUnicodeClassesToASetExpression() {
-        final Pattern expression = new RegexSynth(
+        final Pattern expression = new ReXPlainDSL(
                 includeUnicodeScript(simpleSetStr("-", "."), UnicodeScript.SINHALA, false)
         ).compile().patternInstance();
         System.out.println(expression.pattern());
@@ -91,7 +91,7 @@ public final class SetExpressionTest {
 
     @Test
     public void itShouldAppendANegatedUnicodeClassesToASetExpression() {
-        final Pattern expression = new RegexSynth(
+        final Pattern expression = new ReXPlainDSL(
                 includeUnicodeScript(simpleSetStr("-", "."), UnicodeScript.SINHALA, true)
         ).compile().patternInstance();
         System.out.println(expression.pattern());

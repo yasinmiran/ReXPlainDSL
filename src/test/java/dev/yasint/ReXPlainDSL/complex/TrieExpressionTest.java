@@ -9,11 +9,20 @@ public final class TrieExpressionTest {
 
     @Test
     public void shouldMinimizeString() {
+
         TrieExpression trieExpression = new TrieExpression();
+
         trieExpression.insert("Apple");
         trieExpression.insert("Application");
         trieExpression.insert("Appeal");
-        assertEquals(trieExpression.toRegex().toString(), "App(?:eal|l(?:ication|e))");
+        trieExpression.insert("Contour");
+        trieExpression.insert("Camera");
+        trieExpression.insert("Connotation");
+
+        assertEquals(
+                "(?:App(?:eal|l(?:ication|e))|C(?:amera|on(?:notation|tour)))",
+                trieExpression.toRegex().toString()
+        );
     }
 
 }

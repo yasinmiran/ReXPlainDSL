@@ -2,6 +2,7 @@ package dev.yasint.ReXPlainDSL.performance;
 
 import dev.yasint.RexPlainDSL.api.Expression;
 import dev.yasint.RexPlainDSL.dsl.CharClasses;
+import dev.yasint.RexPlainDSL.dsl.Operators;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import static dev.yasint.RexPlainDSL.dsl.Numeric.integerRange;
-import static dev.yasint.RexPlainDSL.dsl.Operators.either;
 
 public class PerfTest {
 
@@ -50,7 +50,7 @@ public class PerfTest {
         log("Word list size: ", String.valueOf(words.size())); // print the word count
 
         long startTime = System.currentTimeMillis(); // record start time
-        Expression alternation = either(new HashSet<>(words)); // actual code
+        Expression alternation = Operators.eitherStrSet(new HashSet<>(words)); // actual code
         runtime.gc(); // clear the memory
         long memory = runtime.totalMemory() - runtime.freeMemory(); // used memory
         long stopTime = System.currentTimeMillis(); // mark end time

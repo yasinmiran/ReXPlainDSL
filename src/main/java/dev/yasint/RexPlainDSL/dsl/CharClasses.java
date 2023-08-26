@@ -1,6 +1,7 @@
 package dev.yasint.RexPlainDSL.dsl;
 
 import dev.yasint.RexPlainDSL.api.Expression;
+import dev.yasint.RexPlainDSL.api.ReXPlainDSL;
 import dev.yasint.RexPlainDSL.complex.SetExpression;
 import dev.yasint.RexPlainDSL.exceptions.GenericException;
 import dev.yasint.RexPlainDSL.exceptions.SetElementException;
@@ -21,7 +22,7 @@ public final class CharClasses {
 
     /**
      * Matches any character, possibly including newline \n if
-     * the 's' {@link dev.yasint.RexPlainDSL.api.RegexSynth.Flags#DOTALL}
+     * the 's' {@link ReXPlainDSL.Flags#DOTALL}
      * flag is turned on.
      *
      * @return match anything

@@ -2,7 +2,7 @@ package dev.yasint.ReXPlainDSL.dsl;
 
 import com.google.re2j.Pattern;
 import dev.yasint.RexPlainDSL.api.Expression;
-import dev.yasint.RexPlainDSL.api.RegexSynth;
+import dev.yasint.RexPlainDSL.api.ReXPlainDSL;
 import dev.yasint.RexPlainDSL.dsl.CharClasses;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ public final class CharClassesTest {
 
     @Test
     public void itShouldAppendMatchAnyCharacterAtPosition() {
-        final Pattern expression = new RegexSynth(
+        final Pattern expression = new ReXPlainDSL(
                 exactly(5, anything())
         ).compile().patternInstance();
         assertEquals(expression.pattern(), "(?:.){5}");
